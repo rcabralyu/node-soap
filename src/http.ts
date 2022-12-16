@@ -4,7 +4,6 @@
  */
 
 import * as req from 'axios';
-import { NtlmClient } from 'axios-ntlm';
 import * as debugBuilder from 'debug';
 import { ReadStream } from 'fs';
 import * as url from 'url';
@@ -39,7 +38,7 @@ export class HttpClient implements IHttpClient {
   constructor(options?: IOptions) {
     options = options || {};
     this.options = options;
-    this._request = options.request || req.default.create();
+    this._request = options.request || req.create();
   }
 
   /**
@@ -188,13 +187,6 @@ export class HttpClient implements IHttpClient {
     const options = this.buildRequest(rurl, data, exheaders, exoptions);
     let req: req.AxiosPromise;
     if (exoptions !== undefined && exoptions.ntlm) {
-      const ntlmReq = NtlmClient({
-        username: exoptions.username,
-        password: exoptions.password,
-        workstation: exoptions.workstation || '',
-        domain: exoptions.domain || '',
-      });
-      req = ntlmReq(options);
     } else {
       if (this.options.parseReponseAttachments) {
         options.responseType = 'arraybuffer';
